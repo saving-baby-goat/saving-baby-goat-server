@@ -42,6 +42,10 @@ module.exports = (server) => {
       io.to(targetId).emit("receiveMineralCount", currentGameState);
     });
 
+    socket.on("sendGameOver", ({ currentGameState, targetId }) => {
+      io.to(targetId).emit("receiveGameOver", currentGameState);
+    });
+
     socket.on("disconnect", () => {
       // eslint-disable-next-line no-console
       console.log("User Disconnected", socket.id);
