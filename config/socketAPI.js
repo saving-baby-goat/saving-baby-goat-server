@@ -51,8 +51,7 @@ module.exports = (server) => {
     });
 
     socket.on("disconnect", () => {
-      // eslint-disable-next-line no-console
-      console.log("User Disconnected", socket.id);
+      disconnectHelper(io, socket);
     });
   });
 };
@@ -111,4 +110,102 @@ function joinGameRoomHelper(io, socket, playerInfo) {
     "joinGameRoom",
     socket.gameRoomInfo
   );
+}
+
+function disconnectHelper(io, socket) {
+  const targetGameRoomId = `room-${socket.id}`;
+
+  for (let i = 0; i < io.gameRooms.EASY.openRoom.length; i++) {
+    if (io.gameRooms.EASY.openRoom[i].currentGameRoomId === targetGameRoomId) {
+      io.gameRooms.EASY.openRoom.splice(i, 1);
+    }
+  }
+
+  for (let i = 0; i < io.gameRooms.NORMAL.openRoom.length; i++) {
+    if (
+      io.gameRooms.NORMAL.openRoom[i].currentGameRoomId === targetGameRoomId
+    ) {
+      io.gameRooms.NORMAL.openRoom.splice(i, 1);
+    }
+  }
+
+  for (let i = 0; i < io.gameRooms.HARD.openRoom.length; i++) {
+    if (io.gameRooms.HARD.openRoom[i].currentGameRoomId === targetGameRoomId) {
+      io.gameRooms.HARD.openRoom.splice(i, 1);
+    }
+  }
+
+  let easyIndex = -1;
+  let normalIndex = -1;
+  let hardIndex = -1;
+  let targetId = "";
+
+  for (let i = 0; i < io.gameRooms.EASY.closeRooms.length; i++) {
+    easyIndex = io.gameRooms.EASY.closeRooms.findIndex(
+      (playersSocketId) => playersSocketId.player1SocketId === socket.id
+    );
+    if (easyIndex > -1) {
+      targetId = io.gameRooms.EASY.closeRooms[easyIndex].player2SocketId;
+      break;
+    }
+
+    easyIndex = io.gameRooms.EASY.closeRooms.findIndex(
+      (playersSocketId) => playersSocketId.player2SocketId === socket.id
+    );
+    if (easyIndex > -1) {
+      targetId = io.gameRooms.EASY.closeRooms[easyIndex].player1SocketId;
+      break;
+    }
+  }
+
+  for (let i = 0; i < io.gameRooms.NORMAL.closeRooms.length; i++) {
+    normalIndex = io.gameRooms.NORMAL.closeRooms.findIndex(
+      (playersSocketId) => playersSocketId.player1SocketId === socket.id
+    );
+    if (normalIndex > -1) {
+      targetId = io.gameRooms.NORMAL.closeRooms[normalIndex].player2SocketId;
+      break;
+    }
+
+    normalIndex = io.gameRooms.NORMAL.closeRooms.findIndex(
+      (playersSocketId) => playersSocketId.player2SocketId === socket.id
+    );
+    if (normalIndex > -1) {
+      targetId = io.gameRooms.NORMAL.closeRooms[normalIndex].player1SocketId;
+      break;
+    }
+  }
+
+  for (let i = 0; i < io.gameRooms.HARD.closeRooms.length; i++) {
+    hardIndex = io.gameRooms.HARD.closeRooms.findIndex(
+      (playersSocketId) => playersSocketId.player1SocketId === socket.id
+    );
+    if (hardIndex > -1) {
+      targetId = io.gameRooms.HARD.closeRooms[hardIndex].player2SocketId;
+      break;
+    }
+
+    hardIndex = io.gameRooms.HARD.closeRooms.findIndex(
+      (playersSocketId) => playersSocketId.player2SocketId === socket.id
+    );
+    if (hardIndex > -1) {
+      targetId = io.gameRooms.HARD.closeRooms[hardIndex].player1SocketId;
+      break;
+    }
+  }
+
+  if (easyIndex > -1) {
+    io.gameRooms.EASY.closeRooms.splice(easyIndex, 1);
+  }
+  if (normalIndex > -1) {
+    io.gameRooms.NORMAL.closeRooms.splice(easyIndex, 1);
+  }
+  if (hardIndex > -1) {
+    io.gameRooms.HARD.closeRooms.splice(easyIndex, 1);
+  }
+
+  io.to(targetId).emit("leaveGame");
+  socket.disconnect();
+  // eslint-disable-next-line no-console
+  console.log("User Disconnected", socket.id);
 }
