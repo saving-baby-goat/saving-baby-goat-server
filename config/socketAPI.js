@@ -34,15 +34,9 @@ module.exports = (server) => {
       io.to(targetId).emit("receiveNodeList", nodeList);
     });
 
-    socket.on(
-      "sendPlayerStartNodeIdAndGoatId",
-      ({ nodeId, goatNodeId, targetId }) => {
-        io.to(targetId).emit("receivePlayerStartNodeIdAndGoatId", {
-          nodeId,
-          goatNodeId,
-        });
-      }
-    );
+    socket.on("sendMineralNodeIdList", ({ mineralNodeIdList, targetId }) => {
+      io.to(targetId).emit("receiveMineralNodeIdList", mineralNodeIdList);
+    });
 
     socket.on("sendEndOfTurn", ({ currentGameState, targetId }) => {
       io.to(targetId).emit("receiveEndOfTurn", currentGameState);
