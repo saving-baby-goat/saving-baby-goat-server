@@ -38,6 +38,10 @@ module.exports = (server) => {
       io.to(targetId).emit("receiveMineralNodeIdList", mineralNodeIdList);
     });
 
+    socket.on("sendStartNodeId", ({ nodeId, targetId }) => {
+      io.to(targetId).emit("receiveStartNodeId", nodeId);
+    });
+
     socket.on("sendEndOfTurn", ({ currentGameState, targetId }) => {
       io.to(targetId).emit("receiveEndOfTurn", currentGameState);
     });
