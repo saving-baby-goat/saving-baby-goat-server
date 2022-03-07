@@ -1,39 +1,19 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
-
 const http = require("http");
 
 const debug = require("debug")("saving-baby-goat-server:server");
 
 const app = require("../app");
-
-/**
- * Get port from environment and store in Express.
- */
-
-const port = normalizePort(process.env.PORT || "3000");
-app.set("port", port);
-
-/**
- * Create HTTP server.
- */
+const socketServer = require("../config/socketAPI");
 
 const server = http.createServer(app);
+const port = normalizePort(process.env.PORT || "8000");
+app.set("port", port);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+socketServer(server);
 
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
 
 function normalizePort(val) {
   const port = parseInt(val, 10);
@@ -50,10 +30,6 @@ function normalizePort(val) {
 
   return false;
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
 
 function onError(error) {
   if (error.syscall !== "listen") {
@@ -78,10 +54,6 @@ function onError(error) {
       throw error;
   }
 }
-
-/**
- * Event listener for HTTP server "listening" event.
- */
 
 function onListening() {
   const addr = server.address();
