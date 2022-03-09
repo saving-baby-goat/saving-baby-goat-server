@@ -10,6 +10,7 @@ const helmet = require("helmet");
 const logger = require("morgan");
 
 const customMapRouter = require("./routes/custonMapRouter");
+const testRouter = require("./routes/testRouter");
 
 const corsOptions = {
   origin: process.env.CORS_ORIGIN_URL,
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors(corsOptions));
 
 app.use("/customMap", customMapRouter);
+app.use("/test", testRouter);
 
 app.use(function (error, req, res, next) {
   res.status(error.status || 500);
