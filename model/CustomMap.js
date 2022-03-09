@@ -11,7 +11,7 @@ const customMapSchema = new mongoose.Schema({
       required: true,
     },
     byId: {
-      type: [Object],
+      type: Object,
       required: true,
     },
   },
