@@ -9,7 +9,7 @@ const express = require("express");
 const helmet = require("helmet");
 const logger = require("morgan");
 
-const indexRouter = require("./routes/index");
+const customMapRouter = require("./routes/custonMapRouter");
 
 const corsOptions = {
   origin: process.env.CORS_ORIGIN_URL,
@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors(corsOptions));
 
-app.use("/", indexRouter);
+app.use("/customMap", customMapRouter);
 
 app.use(function (error, req, res, next) {
   res.status(error.status || 500);
