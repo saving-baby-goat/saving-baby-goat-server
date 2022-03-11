@@ -17,7 +17,7 @@ exports.saveCustomMap = async (req, res, next) => {
 
     res.json({
       result: RESPONSE_RESULT.OK,
-      review: createdCustomMapInfo,
+      customMapInfo: createdCustomMapInfo,
     });
   } catch (error) {
     next(
